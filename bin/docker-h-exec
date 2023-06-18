@@ -1,0 +1,55 @@
+#!/bin/sh -e
+##:
+#h: Usage: docker-h-exec [CONTAINER [COMMAND]]
+##:
+docker_h_exec() {
+    local container ps1 code args
+
+    ## List containers.
+    container="$1"
+    if test ! -n "${container}"; then
+        docker container ls --format json -a 2>/dev/null | jq -r '.[] | .Names[0]'
+        return 0
+    fi
+    shift
+    
+    ## Prepare command.
+    ps1='[CONTAINER:'"${container}"' USER:\u PWD:\w]\n$ '
+    code=''
+    args=''
+    case "$(pwd)" in
+        /h/*) args="${args} -w $(pwd)";;
+    esac
+    if test -n "$1"; then
+        code="${code}
+        if test -e /etc/profile.d/profile2; then
+            . /etc/profile.d/profile2
+        fi
+        $*
+        "
+    else
+        code="${code}
+        export PS1='${ps1}'
+        if test -e /etc/profile.d/profile2; then
+            . /etc/profile.d/profile2
+        fi
+        if test -e /bin/bash; then
+            exec /bin/bash --noprofile --norc --posix
+        else
+            exec /bin/sh
+        fi
+        "
+    fi
+
+    ## Start container if needed.
+    docker start "${container}" >/dev/null
+
+    ## Execute command.
+    docker exec -i -t ${args} "${container}" /bin/sh -e -c "${code}"
+}
+if test @"$(basename "$0")" = @"docker-h-exec";then
+    case "${1}" in
+        -h|--help) sed -n 's/^ *#h: \{0,1\}//p' "$0";;
+        *)         docker_h_exec "$@"; exit 0;;
+    esac
+fi

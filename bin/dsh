@@ -1,0 +1,13 @@
+#!/bin/sh -e
+##:
+#h: Usage: dsh [CONTAINER [COMMAND]]
+#h:
+#h: An alias for docker-h-exec(1).
+##:
+. docker-h-exec
+if test @"$(basename "$0")" = @"dsh";then
+    case "${1}" in
+        -h|--help) sed -n 's/^ *#h: \{0,1\}//p' "$0";;
+        *)         docker_h_exec "$@"; exit 0;;
+    esac
+fi

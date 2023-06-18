@@ -1,0 +1,17 @@
+#!/bin/sh -e
+##:
+#h: Usage: docker-h-delete CONTAINERS... : Kill containers and delete.
+##:
+docker_h_delete() {
+    local arg
+    for arg in "$@"; do
+        docker container kill "${arg}" >/dev/null 2>&1 || true
+        docker container rm "${arg}" || true
+    done
+}
+if test @"$(basename "$0")" = @"docker-h-delete";then
+    case "${1}" in
+        -h|--help) sed -n 's/^ *#h: \{0,1\}//p' "$0";;
+        *)         docker_h_delete "$@"; exit 0;;
+    esac
+fi
