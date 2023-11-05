@@ -5,6 +5,12 @@ all:
 clean:
 install:
 
+## -- BLOCK:license --
+install: install-license
+install-license: 
+	mkdir -p $(DESTDIR)$(PREFIX)/share/doc/$(PROJECT)
+	cp LICENSE  $(DESTDIR)$(PREFIX)/share/doc/$(PROJECT)
+## -- BLOCK:license --
 ## -- BLOCK:sh --
 install: install-sh
 install-sh:
@@ -13,12 +19,3 @@ install-sh:
 	cp bin/docker-h-exec    $(DESTDIR)$(PREFIX)/bin
 	cp bin/dsh              $(DESTDIR)$(PREFIX)/bin
 ## -- BLOCK:sh --
-## -- BLOCK:license --
-install: install-license
-install-license: 
-	mkdir -p $(DESTDIR)$(PREFIX)/share/doc/$(PROJECT)
-	cp LICENSE README.md $(DESTDIR)$(PREFIX)/share/doc/$(PROJECT)
-update: update-license
-update-license:
-	ssnip README.md
-## -- BLOCK:license --

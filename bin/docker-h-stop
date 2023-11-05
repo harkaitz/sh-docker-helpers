@@ -1,0 +1,15 @@
+#!/bin/sh -e
+##:
+#h: Usage: docker-h-stop
+#h:
+#h: Stop all containers.
+##:
+docker_h_stop() {
+    docker container ls | sed '1d;s| .*||' | xargs -r docker container stop
+}
+if test @"`basename "$0"`" = @"docker-h-stop";then
+    case "${1}" in
+        -h|--help) sed -n 's/^ *#h: \{0,1\}//p' "$0";;
+        *)         docker_h_stop "$@"; exit 0;;
+    esac
+fi

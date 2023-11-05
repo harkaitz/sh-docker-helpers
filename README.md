@@ -10,6 +10,12 @@ docker-h-exec
 
     Usage: docker-h-exec [CONTAINER [COMMAND]]
 
+docker-h-stop
+
+    Usage: docker-h-stop
+    
+    Stop all containers.
+
 dsh
 
     Usage: dsh [CONTAINER [COMMAND]]
